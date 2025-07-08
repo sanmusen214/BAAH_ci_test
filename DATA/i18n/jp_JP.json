@@ -29,6 +29,7 @@
     "task_short_story":"短編ストーリー",
     "task_side_story":"サイドストーリー",
     "task_oneclick_raid":"一括攻略",
+    "task_event_recap": "イベント一括攻略",
 
     "setting_emulator": "エミュレータ設定",
     "setting_server": "サーバー設定",
@@ -193,12 +194,15 @@
     "notice_QA":"使用方法とよくある質問",
     "mirror_desc": "既存のMirror酱キーを追加して、アップデートパッケージのダウンロード速度と安定性を向上させることができます",
 
+    "aria2_path": "Aria2のパス",
+    "aria2_thread":"Aria2のダウンロードスレッド数",
+    "aria2_max_tries":"Aria2の最大再試行回数",
+    "aria2_failured_wait_time": "Aria2のダウンロード失敗後の待機時間",
 
-
-
-
-    
-
+    "config_big_update": "ゲームパッケージを更新する 大規模アップデート時 （実験的機能）",
+    "big_update_type": "更新方法",
+    "big_update_type_api": "API",
+    "big_update_type_urlget": "URLGET",
 
 
     "status_finish": "すべてのタスクが終了しました"

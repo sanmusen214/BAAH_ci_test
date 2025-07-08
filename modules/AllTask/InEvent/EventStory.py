@@ -41,6 +41,7 @@ class EventStory(Task):
         screenshot()
         if match(popup_pic(PopupName.POPUP_TOTAL_PRICE)):
             logging.warn({"zh_CN": "体力不够，结束", "en_US": "Not enough AP, end"})
+            self.status = Task.STATUS_ERROR
             return "noap"
         # 剧情这边应该只会有单次战斗
         FightQuest(backtopic=lambda: match(page_pic(PageName.PAGE_EVENT))).run()
