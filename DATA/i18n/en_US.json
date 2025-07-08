@@ -29,6 +29,7 @@
     "task_short_story":"Short Story",
     "task_side_story":"Side Story",
     "task_oneclick_raid":"One Click Raid",
+    "task_event_recap": "Event Recap",
 
     "setting_emulator": "Emulator Configuration",
     "setting_server": "Server Configuration",

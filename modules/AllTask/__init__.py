@@ -8,6 +8,7 @@ from .InClub.InClub import InClub
 from .InShop.InShop import InShop
 
 from .InEvent.InEvent import InEvent
+from .InEventRecap.InEventRecap import InEventRecap
 from .InQuest.InQuest import InQuest
 from .InWanted.InWanted import InWanted
 from .InSpecial.InSpecial import InSpecial
