@@ -27,6 +27,7 @@ class TaskName():
     TACTICAL_CHALLENGE = "战术大赛"
     HARD = "困难关卡"
     EVENT = "活动关卡"
+    EVENTRECAP = "活动一览"
     ASSAULT = "总力战"
     DAILY = "每日任务"
     MAIL = "邮件"
@@ -76,6 +77,12 @@ class TaskInstanceMap:
                     task_config_name = TaskName.MOMOTALK,
                     i18n_key_name = "task_clear_momotalk",
                     task_module = InMomotalk,
+                    task_params = {}
+                ),
+            TaskName.EVENTRECAP: TaskInstance(
+                    task_config_name= TaskName.EVENTRECAP,
+                    i18n_key_name="task_event_recap",
+                    task_module=InEventRecap,
                     task_params = {}
                 ),
             TaskName.CAFE: TaskInstance(

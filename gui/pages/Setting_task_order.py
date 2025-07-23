@@ -73,5 +73,6 @@ def set_task_order(config, real_taskname_to_show_taskname, logArea):
         [TaskName.MAIN_STORY, TaskName.SHORT_STORY, TaskName.SIDE_STORY],
         TaskName.SOLVE_CHALLENGE, 
         [TaskName.PUSH_NORMAL, TaskName.PUSH_HARD],
+        TaskName.EVENTRECAP
     ], config, real_taskname_to_show_taskname, logArea)
 

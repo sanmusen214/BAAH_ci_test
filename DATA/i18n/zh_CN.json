@@ -29,6 +29,7 @@
     "task_short_story":"推短篇剧情/小故事",
     "task_side_story":"推支线剧情/社团故事",
     "task_oneclick_raid":"一键扫荡",
+    "task_event_recap":"活动一览",
 
     "setting_emulator":"模拟器配置",
     "setting_server":"服务器配置",
@@ -193,12 +194,15 @@
     "notice_QA":"如何使用以及常见问题",
     "mirror_desc":"你可以通过添加已有的Mirror酱密钥来加快更新包的下载速度/稳定性",
 
+    "aria2_path":"Aria2路径",
+    "aria2_thread":"Aria2下载线程数",
+    "aria2_max_tries":"Aria2最大重试次数",
+    "aria2_failured_wait_time":"Aria2下载失败后等待时间",
 
-
-
-
-
-
+    "config_big_update": "大版本更新时更新游戏包体（实验性功能）",
+    "big_update_type": "更新方式",
+    "big_update_type_api": "API",
+    "big_update_type_urlget": "URLGET",
 
 
 
