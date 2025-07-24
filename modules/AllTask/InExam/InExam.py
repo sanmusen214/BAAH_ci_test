@@ -82,8 +82,8 @@ class InExam(Task):
                         CN: f"考试队伍 {t+1} 第 {current_level} 关考试失败",
                         EN: f"Exam team {t+1} failed level {current_level}",
                     }))
-                    if current_level >= 2:
-                        current_level -= 1 # 降低难度
+                    current_level -= 1 # 降低难度
+                    if current_level >= 1:
                         logging.info(istr({
                             CN: f"尝试挑战低一档难度",
                             EN: f"Attempt to challenge a lower level",
