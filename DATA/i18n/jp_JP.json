@@ -182,6 +182,7 @@
     "word_normal":"通常",
     "word_hard":"難関",
     "desc_exam_times":"試験を受けるチームの数",
+    "desc_exam_allow_fallback": "試験に失敗した場合、難易度の低いレベルに挑戦する",
 
     "config_server_jp": "日本サーバー",
     "config_server_cn": "中国公式サーバー",

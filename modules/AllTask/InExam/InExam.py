@@ -48,6 +48,7 @@ class InExam(Task):
         )
         target_team_number = int(config.userconfigdict["EXAM_TEAM_COUNT"])
         target_level = int(config.userconfigdict["EXAM_TARGET_LEVEL"])
+        try_lower_level = bool(config.userconfigdict["EXAM_ALLOW_FALLBACK"])
         for t in range(target_team_number):
             current_level = target_level
             while current_level >= 1:
@@ -82,17 +83,20 @@ class InExam(Task):
                         CN: f"考试队伍 {t+1} 第 {current_level} 关考试失败",
                         EN: f"Exam team {t+1} failed level {current_level}",
                     }))
-                    current_level -= 1 # 降低难度
-                    if current_level >= 1:
-                        logging.info(istr({
-                            CN: f"尝试挑战低一档难度",
-                            EN: f"Attempt to challenge a lower level",
-                        }))
+                    if try_lower_level:
+                        current_level -= 1 # 降低难度
+                        if current_level >= 1:
+                            logging.info(istr({
+                                CN: f"尝试挑战低一档难度",
+                                EN: f"Attempt to challenge a lower level",
+                            }))
+                        else:
+                            logging.warn(istr({
+                                CN: f"考试队伍 {t+1} 从 {target_level} 到 1 的所有难度均失败，请检查配队",
+                                EN: f"Exam team {t+1} has failed all attempted levels from {target_level} to 1, please check your team configuration",
+                            }))
                     else:
-                        logging.warn(istr({
-                            CN: f"考试队伍 {t+1} 从 {target_level} 到 1 的所有难度均失败，请检查配队",
-                            EN: f"Exam team {t+1} has failed all attempted levels from {target_level} to 1, please check your team configuration",
-                        }))
+                        break
                 else:
                     logging.info(istr({
                         CN: f"考试队伍 {t+1} 第 {current_level} 关考试通过",

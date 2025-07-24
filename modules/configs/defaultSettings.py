@@ -291,6 +291,10 @@ defaultUserDict = {
     "EXAM_TEAM_COUNT":{
         "d":3
     },
+    # 综合战术考试 失败后尝试上一关
+    "EXAM_ALLOW_FALLBACK":{
+        "d":True
+    },
     # ARIA2配置
     "ARIA2_PATH":{"d":"./tools/aria2/aria2c.exe"},
     "ARIA2_THREADS":{"d":16},
