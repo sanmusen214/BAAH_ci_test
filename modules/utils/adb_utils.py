@@ -147,7 +147,8 @@ def get_now_running_app(use_config=None):
                     logging.warn({"zh_CN": "截取当前运行的app名失败：{}".format(output),
                                 "en_US": "Failed to get the current running app name:{}".format(output)})
                     break
-    return output
+    logging.debug(f"get now running app:\n{output}")
+    return ""
 
 
 def get_now_running_app_entrance_activity(use_config=None):

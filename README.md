@@ -10,6 +10,10 @@ BAAH can help you finish daily tasks of BlueArchive (Global server, Japan server
 
 ---
 
+[ :tada: 全新的项目官网上线啦 | Project website is deployed :tada: ](https://baah.sanmusen.top/)
+
+---
+
 [项目文档 | Project Document](./README.md) <-- You are here | 你在这里
 
 如何使用请见使用文档 / Get to know how to use BAAH by reading usage documents
