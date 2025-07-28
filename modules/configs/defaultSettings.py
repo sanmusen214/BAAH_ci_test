@@ -299,8 +299,8 @@ defaultUserDict = {
     
     # 大更新配置
     "BIG_UPDATE":{"d":False},
-    "BIG_UPDATE_TYPE":{"d":"API",
-                                        "s":["API", "URLGET"]}
+    "BIG_UPDATE_TYPE":{"d":"API","s":["API", "URLGET"]},
+    "CUSTOM_EMAIL":{"d":""},
 }
 
 # 软件的config里的默认值
