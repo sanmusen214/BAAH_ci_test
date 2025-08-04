@@ -182,6 +182,7 @@
     "word_normal":"Normal",
     "word_hard":"Hard",
     "desc_exam_times":"Number of teams to take the exam",
+    "desc_exam_allow_fallback":"If the exam fails, attempt to challenge a lower difficulty level",
 
     "config_server_jp": "Japanese Server",
     "config_server_cn": "Chinese Official Server",
