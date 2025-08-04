@@ -59,3 +59,6 @@ def set_notification(config, shared_softwareconfig):
             ui.link("PushPlus", "http://www.pushplus.plus/", new_tab=True)
             ui.link("ServerChan", "https://sct.ftqq.com/r/13283", new_tab=True)
             ui.link("Telegram Bot", "https://t.me/BotFather", new_tab=True)
+    
+    with ui.row():
+        ui.textarea(placeholder=config.get_text("desc_noti_content_diy")).bind_value(config.userconfigdict, "CUSTOM_EMAIL").style("width: 500px; height: 200px")

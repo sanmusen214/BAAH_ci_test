@@ -304,6 +304,7 @@ defaultUserDict = {
     # 大更新配置
     "BIG_UPDATE":{"d":False},
     "BIG_UPDATE_TYPE":{"d":"API","s":["API", "URLGET"]},
+    # 通知内容格式化字符串，%KEY%
     "CUSTOM_EMAIL":{"d":""},
 }
 
