@@ -47,40 +47,63 @@ class InExam(Task):
             lambda: not self.has_popup()
         )
         target_team_number = int(config.userconfigdict["EXAM_TEAM_COUNT"])
+        target_level = int(config.userconfigdict["EXAM_TARGET_LEVEL"])
+        try_lower_level = bool(config.userconfigdict["EXAM_ALLOW_FALLBACK"])
         for t in range(target_team_number):
-            self.clear_popup()
-            target_ind = int(config.userconfigdict["EXAM_TARGET_LEVEL"]) - 1
-            logging.info(istr({
-                CN: f"正在进行考试，选择第{target_ind + 1}关",
-                EN: f"Exam in progress, select level {target_ind + 1}",
-            }))
-            # 点第n关
-            self.run_until(
-                lambda: click(self.enter_buttons_pos_list[target_ind]),  # 点击第n个按钮，下标减一
-                lambda: self.has_popup()
-            )
-            # 点考试开始
-            self.run_until(
-                lambda: click([639, 508]),
-                lambda: not self.has_popup()
-            )
-            # =====配队页面=======
-            # 切队伍
-            self.run_until(
-                lambda: click(Page.LEFT_FOUR_TEAMS_POSITIONS[t]),
-                lambda: match_pixel(Page.LEFT_FOUR_TEAMS_POSITIONS[t], Page.COLOR_SELECTED_LEFT_FOUR_TEAM)
-            )
-            # 出击打架
-            team_fight = FightQuest(backtopic=lambda: Page.is_page(PageName.PAGE_EXAM))
-            team_fight.run()
-            self.clear_popup()
-            if not team_fight.win_fight_flag:
-                logging.warn(istr({
-                    CN: f"考试队伍 {t+1} 考试失败",
-                    EN: f"Exam team {t+1} failed",
+            current_level = target_level
+            while current_level >= 1:
+                self.clear_popup()
+                target_ind = current_level - 1
+                logging.info(istr({
+                    CN: f"正在进行考试，选择第{current_level}关",
+                    EN: f"Exam in progress, select level {current_level}",
                 }))
-            else:
-                all_lose = False
+                # 点第n关
+                self.run_until(
+                    lambda: click(self.enter_buttons_pos_list[target_ind]),  # 点击第n个按钮，下标减一
+                    lambda: self.has_popup()
+                )
+                # 点考试开始
+                self.run_until(
+                    lambda: click([639, 508]),
+                    lambda: not self.has_popup()
+                )
+                # =====配队页面=======
+                # 切队伍
+                self.run_until(
+                    lambda: click(Page.LEFT_FOUR_TEAMS_POSITIONS[t]),
+                    lambda: match_pixel(Page.LEFT_FOUR_TEAMS_POSITIONS[t], Page.COLOR_SELECTED_LEFT_FOUR_TEAM)
+                )
+                # 出击打架
+                team_fight = FightQuest(backtopic=lambda: Page.is_page(PageName.PAGE_EXAM))
+                team_fight.run()
+                self.clear_popup()
+                if not team_fight.win_fight_flag:
+                    logging.warn(istr({
+                        CN: f"考试队伍 {t+1} 第 {current_level} 关考试失败",
+                        EN: f"Exam team {t+1} failed level {current_level}",
+                    }))
+                    if try_lower_level:
+                        current_level -= 1 # 降低难度
+                        if current_level >= 1:
+                            logging.info(istr({
+                                CN: f"尝试挑战低一档难度",
+                                EN: f"Attempt to challenge a lower level",
+                            }))
+                        else:
+                            logging.warn(istr({
+                                CN: f"考试队伍 {t+1} 从 {target_level} 到 1 的所有难度均失败，请检查配队",
+                                EN: f"Exam team {t+1} has failed all attempted levels from {target_level} to 1, please check your team configuration",
+                            }))
+                    else:
+                        break
+                else:
+                    logging.info(istr({
+                        CN: f"考试队伍 {t+1} 第 {current_level} 关考试通过",
+                        EN: f"Exam team {t+1} passed level {current_level}",
+                    }))
+                    all_lose = False
+                    break  # 挑战成功，换下一个队伍
         # 队伍交战完毕，如果队伍数量小于3，会停留在考试关卡页面，需要判断点击放弃按钮
         self.finish_last_exam()
         return not all_lose
