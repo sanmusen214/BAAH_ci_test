@@ -135,8 +135,13 @@ def whether_has_new_version():
                     continue
                 if get_one_version_num(version_str) <= current_version_num:
                     print(f"Out-dated version found for {key}. Current version: {confile['NOWVERSION']}, Found version: {version_str}")
+                    # 即使线上源无新版本，若当前vi内无信息记录 或 现在vi比当前源记录的版本信息旧，则仍记录其信息 （永远显示线上源的最新版本信息）
+                    if not vi.version_str or get_one_version_num(vi.version_str) < get_one_version_num(version_str):
+                        vi.version_str = version_str
+                        vi.msg = version_str
+                        vi.update_body_text = update_body_text
                     continue
-                # 如果vi内有版本，判断当前循环的源与现在记录的源的版本号大小，如果已记录的vi里版本更加新
+                # 如果vi内有新版本，判断当前循环的源与现在记录的源的版本号大小，如果已记录的vi里版本更加新
                 if vi.has_new_version and get_one_version_num(vi.version_str) >= get_one_version_num(version_str):
                     print(f"Last checked version source {vi.from_source} occurs, {vi.version_str} ({vi.from_source}) is newer or equal to {version_str} ({key}). Skipping {key}.")
                     if get_one_version_num(vi.version_str) == get_one_version_num(version_str) and key == "mirror":
@@ -158,7 +163,7 @@ def whether_has_new_version():
         except Exception as e:
             print(f"Error accessing {key}: {e}")
             continue
-    
+    # 返回VersionInfo对象，永远是线上源最新的版本信息
     if vi is None:
         print("Failed to check time spent for accessing github nor gitee.")
         rvi = VersionInfo()
@@ -167,9 +172,7 @@ def whether_has_new_version():
     
     if not vi.has_new_version:
         print("No new version found.")
-        rvi = VersionInfo()
-        rvi.msg = "No new version found."
-        return rvi
+        return vi
     
     # 拿到最新的vi对象，确认已经有新版本
     return vi
