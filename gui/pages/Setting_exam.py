@@ -18,3 +18,5 @@ def set_exam(config):
                   config.userconfigdict, "EXAM_TEAM_COUNT",
                   forward=lambda x: int(x)
                   ).style('width: 200px')
+    # 如果考试失败则尝试挑战上一关卡
+    ui.checkbox(config.get_text("desc_exam_allow_fallback")).bind_value(config.userconfigdict, "EXAM_ALLOW_FALLBACK")

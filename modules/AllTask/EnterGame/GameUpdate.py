@@ -66,8 +66,9 @@ class GameUpdate(Task):
             logging.info({"zh_CN": f"开始下载文件: {url}, 线程数: {config.userconfigdict['ARIA2_THREADS']}, 尝试次数: {aria2c_try + 1}","en_US": f"Start downloading file: {url}, thread count: {config.userconfigdict['ARIA2_THREADS']}, try count: {aria2c_try + 1}"})
             run = subprocess_run([config.userconfigdict["ARIA2_PATH"], "-c", "-x", str(config.userconfigdict["ARIA2_THREADS"]), url, "-o", filename])
             if run.returncode != 0:
-                logging.error({"zh_CN": f"下载文件失败: {url}, 错误信息: {run.stderr.decode('utf-8')}",
-                                         "en_US": f"Download file failed: {url}, error message: {run.stderr.decode('utf-8')}"})
+                output = str(run.stderr)
+                logging.error({"zh_CN": f"下载文件失败: {url}, 错误信息: {output}",
+                                         "en_US": f"Download file failed: {url}, error message: {output}"})
                 aria2c_try += 1
                 time.sleep(config.userconfigdict["ARIA2_FAILURED_WAIT_TIME"])
             else:
@@ -82,21 +83,21 @@ class GameUpdate(Task):
     def _parse_download_link(self):
         download_info = GameUpdateInfo(apk_url = config.userconfigdict["UPDATE_API_URL"], is_xapk = True)
         if 'html://' in config.userconfigdict["UPDATE_API_URL"]:
-            download_info.apk_url = Update.htmlread(config.userconfigdict["UPDATE_API_URL"])
+            download_info.apk_url = GameUpdate.htmlread(config.userconfigdict["UPDATE_API_URL"])
             download_info.is_xapk = False
         elif 'json://' in config.userconfigdict["UPDATE_API_URL"]:
-            download_info.apk_url = Update.jsonread(config.userconfigdict["UPDATE_API_URL"])
+            download_info.apk_url = GameUpdate.jsonread(config.userconfigdict["UPDATE_API_URL"])
             download_info.is_xapk = False
         return download_info
 
     def _download_apk_file(self, download_info):
         if download_info.is_xapk:
-            Update.aria2_download(download_info.apk_url, os.path.join(self.download_temp_folder, "update.xapk"))
+            GameUpdate.aria2_download(download_info.apk_url, os.path.join(self.download_temp_folder, "update.xapk"))
             with zipfile.ZipFile(os.path.join(self.download_temp_folder, "update.xapk"), 'r') as zip_ref:
                 os.mkdir(os.path.join(self.download_temp_folder, "unzip"))
                 zip_ref.extractall(os.path.join(self.download_temp_folder, "unzip"))
         else:
-            Update.aria2_download(download_info.apk_url, os.path.join(self.download_temp_folder, "update.apk"))
+            GameUpdate.aria2_download(download_info.apk_url, os.path.join(self.download_temp_folder, "update.apk"))
 
     def _install_apk_file(self, download_info):
         if download_info.is_xapk:
@@ -107,7 +108,7 @@ class GameUpdate(Task):
     def _clear_tmp_folder(self):
         logging.info({
             "zh_CN":"更新完成，清理目录",
-            "en_US": "Update completed, clean up directory"
+            "en_US": "GameUpdate completed, clean up directory"
             })
         try:
             shutil.rmtree(self.download_temp_folder)
@@ -141,7 +142,7 @@ class GameUpdate(Task):
         
         logging.info({
             "zh_CN":"更新下载完成，开始安装",
-            "en_US": "Update download completed, start installation"
+            "en_US": "GameUpdate download completed, start installation"
         })
         
         # 3. 安装

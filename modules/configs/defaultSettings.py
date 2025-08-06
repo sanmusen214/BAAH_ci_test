@@ -291,6 +291,10 @@ defaultUserDict = {
     "EXAM_TEAM_COUNT":{
         "d":3
     },
+    # 综合战术考试 失败后尝试上一关
+    "EXAM_ALLOW_FALLBACK":{
+        "d":True
+    },
     # ARIA2配置
     "ARIA2_PATH":{"d":"./tools/aria2/aria2c.exe"},
     "ARIA2_THREADS":{"d":16},
@@ -299,8 +303,9 @@ defaultUserDict = {
     
     # 大更新配置
     "BIG_UPDATE":{"d":False},
-    "BIG_UPDATE_TYPE":{"d":"API",
-                                        "s":["API", "URLGET"]}
+    "BIG_UPDATE_TYPE":{"d":"API","s":["API", "URLGET"]},
+    # 通知内容格式化字符串，%KEY%
+    "CUSTOM_EMAIL":{"d":""},
 }
 
 # 软件的config里的默认值

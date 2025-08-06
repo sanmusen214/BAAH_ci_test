@@ -182,6 +182,8 @@
     "word_normal":"普通",
     "word_hard":"困难",
     "desc_exam_times":"参与考试的小队数量",
+    "desc_exam_allow_fallback":"若考试失败则尝试挑战更低难度关卡",
+    "desc_noti_content_diy":"自定义通知内容格式化字符串，使用 %KEY% 包裹想要的字段。你可以在项目的 modules/configs/defaultSettings 查看可用字段",
 
     "config_server_jp":"日服",
     "config_server_cn":"国服官服",
