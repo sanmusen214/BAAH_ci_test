@@ -64,10 +64,10 @@ class GridQuest(Task):
         self.last_click_position = [-1, -1]
         # 是否自动配队
         self.auto_team = auto_team
-        # 推图文件队伍下标到实际队伍下标的映射
+        # 根据用户强度表，推图文件队伍下标到实际队伍下标的映射
         self.ind_map = self.grider.get_map_from_team_name2real_team_ind(self.require_type)
-        # 开启自动配队的话，使用从0开始的range作为ind_map
-        if self.auto_team:
+        # 开启自动配队或用户没有选择自动配队方案的话，使用从0开始的range作为ind_map
+        if self.auto_team or not config.userconfigdict["EXPLORE_RAINBOW_TEAMS"]:
             self.ind_map = list(range(len(self.ind_map)))
 
     def pre_condition(self) -> bool:
@@ -228,15 +228,17 @@ class GridQuest(Task):
             raise Exception("识别左下角切换队伍的按钮文字失败，请确保你的游戏设置-战斗时上下黑边为关闭，且走格子右下角的跳过战斗选项为开启")
         return nowteam_ind
 
-    def print_team_config(self, _now_need_team_set):
+    def print_team_config(self, _now_need_team_set, _team_ind_mapping = None):
         """
         格式化输出队伍的初始位置以及配置这些信息
         """
+        if _team_ind_mapping is None:
+            _team_ind_mapping = list(range(len(_now_need_team_set)))
         for ind in range(len(_now_need_team_set)):
-            logging.info({"zh_CN": f"    编辑部队-> {ind + 1}部队: {_now_need_team_set[ind]} "
+            logging.info({"zh_CN": f"    编辑部队-> {_team_ind_mapping[ind] + 1}部队: {_now_need_team_set[ind]} "
                                    f"{self.TEAM_TYPE_NAME.get(_now_need_team_set[ind])} "
                                    f"{list(self.grider.get_initialteams(self.require_type))[ind]['position']}",
-                          "en_US": f"    Edit Troops -> {ind + 1} Troops: {_now_need_team_set[ind]} "
+                          "en_US": f"    Edit Troops -> {_team_ind_mapping[ind] + 1} Troops: {_now_need_team_set[ind]} "
                                    f"{self.TEAM_TYPE_NAME.get(_now_need_team_set[ind])} "
                                    f"{list(self.grider.get_initialteams(self.require_type))[ind]['position']}"})
 
@@ -287,7 +289,7 @@ class GridQuest(Task):
             logging.info({"zh_CN": "未保存适合的配置，请按照以下队伍要求配队",
                           "en_US": "The appropriate configuration is not saved, "
                                    "please match the team according to the following team requirements"})
-            self.print_team_config(now_need_team_set_list)
+            self.print_team_config(now_need_team_set_list, self.ind_map)
             logging.info({"zh_CN": "同时，请确保你的SKIP战斗设置为开启，PHASE自动结束为关闭",
                           "en_US": "In the meantime, please make sure your skip battle "
                                    "is set to on and phase automatically ends to off"})
@@ -296,7 +298,7 @@ class GridQuest(Task):
             config.sessiondict["LAST_TEAM_SET"] = now_need_team_set_list
             logging.info({"zh_CN": "配队信息已更新", "en_US": "Dispatch information has been updated"})
         else:
-            self.print_team_config(now_need_team_set_list)
+            self.print_team_config(now_need_team_set_list, self.ind_map)
             # 不需要用户配队的话就继续用上次的队伍
             display_str = " ".join([self.TEAM_TYPE_NAME.get(item) for item in last_team_set_list])
             logging.info({"zh_CN": f"使用上次的队伍配置: {display_str}",
@@ -359,7 +361,7 @@ class GridQuest(Task):
             if not edit_page_result:
                 logging.error({"zh_CN": "未识别到配队界面，可能是队伍起始点被遮挡导致识别失败",
                                "en_US": "Can't recognize the edit team page, maybe the team start point is blocked and the recognition fails"})
-                self.print_team_config(now_need_team_set_list)
+                self.print_team_config(now_need_team_set_list, self.ind_map)
                 input("请按照以上要求手动出击队伍，然后返回至格子地图界面，回车以继续...")
             # 选择队伍编号
             # 如果开启了自动配队，第一次循环的时候进行自动配队

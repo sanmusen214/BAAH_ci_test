@@ -19,6 +19,8 @@ class SmartSelect(Task):
         super().__init__(name)
         # 每个地区右上角的名字区域
         self.location_name_area = ((923, 94), (1132, 130))
+        # 爱心是否显示在学生头像下侧，目前除了国服，其他都改动了
+        self.scroll_down_to_recg_heart = not config.userconfigdict['SERVER_TYPE'] in ["CN", "CN_BILI"]
 
     def pre_condition(self) -> bool:
         return Page.is_page(PageName.PAGE_TIMETABLE)
@@ -101,10 +103,10 @@ class SmartSelect(Task):
                 lambda: match(popup_pic(PopupName.POPUP_TIMETABLE_ALL))
             )
             # 向下滑动，截图
-            if config.userconfigdict['SERVER_TYPE'] in ["JP"]:
+            if self.scroll_down_to_recg_heart:
                 swipe([814, 574], [813, 257], 0.5, sleeptime=0.5)
                 screenshot()
-            heartdict = get_hearts_of_rooms()
+            heartdict = get_hearts_of_rooms(self.scroll_down_to_recg_heart)
             opendict = get_open_status_of_rooms()
             # 计算分数
             for room_num in range(1, 10):

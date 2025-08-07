@@ -19,9 +19,9 @@ class EnterGame(Task):
         记录主页中的资源
         """
         # 记录主页中的资源
-        power_num = ocr_area((503, 17), (602, 56))[0]
+        power_num = ocr_area((483, 17), (582, 56))[0]
         # print("体力: ", power_num)
-        credit_num = ocr_area((688, 19), (832, 59))[0]
+        credit_num = ocr_area((668, 19), (812, 59))[0]
         # print("信用点: ", credit_num)
         diamond_num = ocr_area((863, 21), (973, 60))[0]
         # print("钻石: ", diamond_num)

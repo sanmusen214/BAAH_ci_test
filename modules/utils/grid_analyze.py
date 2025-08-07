@@ -260,7 +260,7 @@ class GridAnalyzer:
     
     def get_map_from_team_name2real_team_ind(self, require_type):
         """
-        从推图文件里将下标0的A，下标1的B，下标2的C映射到正确的队伍编号上
+        从推图文件里将下标0的A，下标1的B，下标2的C映射到正确的队伍编号上。这一步会读取用户配置的队伍强度表，并返回基于强度表的映射结果。
 
         比如，A对应的红色队伍是编队2，B对应的蓝色队伍是编队3，C对应的是编队1
 
