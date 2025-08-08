@@ -41,6 +41,11 @@ class GameUpdate(Task):
         "CN_BILI": "json://https://line1-h5-pc-api.biligame.com/game/detail/gameinfo?game_base_id=109864"
     }
 
+    direct_get_urls = [
+        "https://api.blockhaity.dpdns.org/api/baapk.json",
+        "https://blockhaity-api.netlify.app/api/baapk.json"
+    ]
+    
     def __init__(self, name="GameUpdate", pre_times = 1, post_times = 1) -> None:
         super().__init__(name, pre_times, post_times)
         self.download_temp_folder = "DATA/tmp"
@@ -122,6 +127,44 @@ class GameUpdate(Task):
         #     download_info.is_xapk = False
         return download_info
 
+    def _parse_download_link_direct_get(self):
+        number = 1
+        for url in GameUpdate.direct_get_urls:
+            try:
+                logging.info(istr({"zh_CN": f"尝试从节点{number}获取更新链接 ", "en_US": f"Trying to get update link from node {number}"}))
+                data = json.loads(requests.get(url))
+                break
+            except Exception as e:
+                if number == len(GameUpdate.direct_get_urls):
+                    logging.error(e)
+                    raise Exception(istr({
+                        "zh_CN": "无法获取更新链接，请检查网络",
+                        "en_US": "Failed to get update link, please check your network"
+                    }))
+                elif number < len(GameUpdate.direct_get_urls):
+                    logging.error(e)
+                    logging.error(istr({
+                        "zh_CN": "获取更新链接失败，从其他节点重试",
+                        "en_US": "Failed to get update link, retry from other nodes"
+                    }))
+                    number += 1
+        download_info = GameUpdateInfo(apk_url = None, is_xapk = None)
+        if config.userconfigdict['SERVER_TYPE'] == 'JP':
+            download_info.apk_url = data['JP']
+            download_info.is_xapk = True
+        elif (config.userconfigdict['SERVER_TYPE'] == 'GLOBAL_EN'
+               or config.userconfigdict['SERVER_TYPE'] == 'GLOBAL'):
+            download_info.apk_url = data['GLOBAL']
+            download_info.is_xapk = True
+        elif config.userconfigdict['SERVER_TYPE'] == 'CN':
+            download_info.apk_url = data['CN']
+            download_info.is_xapk = False
+        elif config.userconfigdict['SERVER_TYPE'] == 'CN_BILI':
+            download_info.apk_url = data['CN_BILI']
+            download_info.is_xapk = False
+        else:
+            download_info = None
+            
     def _download_apk_file_api(self, download_info):
         if download_info.is_xapk is True:
             try_download = 1
@@ -149,6 +192,20 @@ class GameUpdate(Task):
                 zip_ref.extractall(os.path.join(self.download_temp_folder, "unzip"))
         elif download_info.is_xapk is False:
             GameUpdate.aria2_download(download_info.apk_url,"API", os.path.join(self.download_temp_folder, "update.apk"))
+        else:
+            raise Exception(istr({
+                "zh_CN": "无法获取包体更新链接，请报告给开发者",
+                "en_US": "Cannot get apk update link, please report to the developer"
+            }))
+            
+    def _download_apk_file_direct_get(self, download_info):
+        if download_info.is_xapk is True:
+            GameUpdate.aria2_download(download_info.apk_url, "DirectGet", os.path.join(self.download_temp_folder, "update.xapk"))
+            with zipfile.ZipFile(os.path.join(self.download_temp_folder, "update.xapk"), 'r') as zip_ref:
+                os.mkdir(os.path.join(self.download_temp_folder, "unzip"))
+                zip_ref.extractall(os.path.join(self.download_temp_folder, "unzip"))
+        elif download_info.is_xapk is False:
+            GameUpdate.aria2_download(download_info.apk_url, "DirectGet", os.path.join(self.download_temp_folder, "update.apk"))
         else:
             raise Exception(istr({
                 "zh_CN": "无法获取包体更新链接，请报告给开发者",
@@ -184,6 +241,13 @@ class GameUpdate(Task):
                     "en_US": "Cannot get apk update link, please report to the developer"
                 })
                 return
+        elif config.userconfigdict["BIG_UPDATE_TYPE"] == "DIRECT_GET":
+            download_info = self._parse_download_link_direct_get()
+            if download_info.apk_url is None:
+                logging.error({
+                    "zh_CN": "无法获取包体更新链接，请报告给开发者",
+                    "en_US": "Cannot get apk update link, please report to the developer"
+                })
 
         self.task_start_time = time.time()
         logging.info({
@@ -197,6 +261,8 @@ class GameUpdate(Task):
         # 2. 下载
         if config.userconfigdict["BIG_UPDATE_TYPE"] == "API":
             self._download_apk_file_api(download_info)
+        elif config.userconfigdict["BIG_UPDATE_TYPE"] == "DIRECT_GET":
+            self._download_apk_file_direct_get(download_info)
         
         logging.info({
             "zh_CN":"更新下载完成，开始安装",
