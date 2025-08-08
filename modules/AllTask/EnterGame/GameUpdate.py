@@ -132,7 +132,7 @@ class GameUpdate(Task):
         for url in GameUpdate.direct_get_urls:
             try:
                 logging.info(istr({"zh_CN": f"尝试从节点{number}获取更新链接 ", "en_US": f"Trying to get update link from node {number}"}))
-                data = json.loads(requests.get(url))
+                data = json.loads(requests.get(url).text)
                 break
             except Exception as e:
                 if number == len(GameUpdate.direct_get_urls):
@@ -150,21 +150,22 @@ class GameUpdate(Task):
                     number += 1
         download_info = GameUpdateInfo(apk_url = None, is_xapk = None)
         if config.userconfigdict['SERVER_TYPE'] == 'JP':
-            download_info.apk_url = data['JP']
+            download_info.apk_url = data['jp']
             download_info.is_xapk = True
         elif (config.userconfigdict['SERVER_TYPE'] == 'GLOBAL_EN'
                or config.userconfigdict['SERVER_TYPE'] == 'GLOBAL'):
-            download_info.apk_url = data['GLOBAL']
+            download_info.apk_url = data['global']
             download_info.is_xapk = True
         elif config.userconfigdict['SERVER_TYPE'] == 'CN':
-            download_info.apk_url = data['CN']
+            download_info.apk_url = data['cn']
             download_info.is_xapk = False
         elif config.userconfigdict['SERVER_TYPE'] == 'CN_BILI':
-            download_info.apk_url = data['CN_BILI']
+            download_info.apk_url = data['cn_bili']
             download_info.is_xapk = False
         else:
             download_info = None
-            
+        return download_info
+        
     def _download_apk_file_api(self, download_info):
         if download_info.is_xapk is True:
             try_download = 1
