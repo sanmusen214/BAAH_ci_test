@@ -171,7 +171,6 @@ class GameUpdate(Task):
             try_download = 1
             for apk_url in download_info.apk_url:
                 try:
-                    logging.info(apk_url)
                     GameUpdate.aria2_download(apk_url, istr({"zh_CN":"API节点 ","en_US":"API Node "}) + str(try_download),os.path.join(self.download_temp_folder, "update.xapk"))
                     break
                 except Exception as e:
