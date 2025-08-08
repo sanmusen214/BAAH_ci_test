@@ -26,7 +26,7 @@ class GameUpdateInfo():
 # =====
 
 class GameUpdate(Task):
-    urls = {
+    api_urls = {
         "JP":[
             "https://baah.hitfun.top/apk/jp",
             "https://api.blockhaity.dpdns.org/baapk/jp",
@@ -100,17 +100,17 @@ class GameUpdate(Task):
         download_info = GameUpdateInfo(apk_url = None, is_xapk = None)
         if config.userconfigdict['SERVER_TYPE'] == 'JP':
             download_info.is_xapk = True
-            download_info.apk_url = GameUpdate.urls['JP']
+            download_info.apk_url = GameUpdate.api_urls['JP']
         elif (config.userconfigdict['SERVER_TYPE'] == 'GLOBAL_EN'
                or config.userconfigdict['SERVER_TYPE'] == 'GLOBAL'):
             download_info.is_xapk = True
-            download_info.apk_url = GameUpdate.urls['GLOBAL']
+            download_info.apk_url = GameUpdate.api_urls['GLOBAL']
         elif config.userconfigdict['SERVER_TYPE'] == 'CN':
             download_info.is_xapk = False
-            download_info.apk_url = GameUpdate.htmlread(GameUpdate.urls['CN'])
+            download_info.apk_url = GameUpdate.htmlread(GameUpdate.api_urls['CN'])
         elif config.userconfigdict['SERVER_TYPE'] == 'CN_BILI':
             download_info.is_xapk = False
-            download_info.apk_url = GameUpdate.jsonread(GameUpdate.urls['CN_BILI'])
+            download_info.apk_url = GameUpdate.jsonread(GameUpdate.api_urls['CN_BILI'])
         else:
             download_info = None
         # 之前通过链接判断有误判风险，故改为通过配置文件判断是否为xapk
@@ -154,7 +154,7 @@ class GameUpdate(Task):
                 "zh_CN": "无法获取包体更新链接，请报告给开发者",
                 "en_US": "Cannot get apk update link, please report to the developer"
             }))
-
+    
     def _install_apk_file(self, download_info):
         if download_info.is_xapk:
             install_dir(os.path.join(self.download_temp_folder, "unzip"))
