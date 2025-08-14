@@ -61,17 +61,10 @@ class InContest(Task):
             sleeptime=4
         )
         # 进入竞技场
-        # 适配日服，国际服
-        if config.userconfigdict["SERVER_TYPE"] in ["JP", "GLOBAL", "GLOBAL_EN"]:
-            canincontest = self.run_until(
-                lambda: click((878, 595)),
-                lambda: Page.is_page(PageName.PAGE_CONTEST)
-            )
-        else:
-            canincontest = self.run_until(
-                lambda: click((1084, 550)),
-                lambda: Page.is_page(PageName.PAGE_CONTEST)
-            )
+        canincontest = self.run_until(
+            lambda: click((878, 595)),
+            lambda: Page.is_page(PageName.PAGE_CONTEST)
+        )
         if not canincontest:
             logging.warning({"zh_CN": "无法打开竞技场页面，跳过任务", "en_US": "Can't open contest page, task quit"})
             self.back_to_home()
