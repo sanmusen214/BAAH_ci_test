@@ -332,6 +332,10 @@ defaultSoftwareDict = {
     "SEC_KEY_M":{
         "d": "",
     },
+    # 错误时是否邮件通知
+    "NOTI_WHEN_ERROR":{
+        "d": False,
+    },
 }
 
 # sessiondict是一个dict，存储一个BAAH配置任务的运行时信息，每次运行的时候都会按照以下内容初始化一个新的sessiondict

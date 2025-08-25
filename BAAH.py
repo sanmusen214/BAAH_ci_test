@@ -389,9 +389,9 @@ def BAAH_core_process(reread_config_name = None, must_auto_quit = False, msg_que
             logging.error({"zh_CN": "删除截图文件失败", "en_US": "Failed to delete screenshot file"})
 
     def BAAH_send_err_mail(e):
-        """ 发送错误通知邮件 """
-        if config.userconfigdict["ENABLE_MAIL_NOTI"]:
-            logging.info({"zh_CN": "发送错误通知邮件", "en_US": "Send error notification email"})
+        """ 发送错误通知 """
+        if config.userconfigdict["NOTI_WHEN_ERROR"] and (config.userconfigdict["ENABLE_MAIL_NOTI"] or config.userconfigdict["ENABLE_HTTP_NOTI"]):
+            logging.info({"zh_CN": "发送错误通知", "en_US": "Send error notification"})
             try:
                 # 构造通知对象
                 notificationer = create_notificationer()
@@ -414,10 +414,12 @@ def BAAH_core_process(reread_config_name = None, must_auto_quit = False, msg_que
                     EN: "Error Message: " + str(e),
                 }))
                 logging.info(notificationer.send("\n".join(content), title=istr({CN: "BAAH任务失败", EN: "BAAH Error"})))
-                logging.info({"zh_CN": "邮件发送结束", "en_US": "The email has been sent"})
+                logging.info({"zh_CN": "通知发送结束", "en_US": "The notification has been sent"})
             except Exception as eagain:
-                logging.error({"zh_CN": "发送邮件失败", "en_US": "Failed to send email"})
+                logging.error({"zh_CN": "发送通知失败", "en_US": "Failed to send notification"})
                 logging.error(eagain)
+        else:
+            logging.info({"zh_CN": "未开启通知或未设定通知配置", "en_US": "Notification is not enabled or not configured"})
 
     def BAAH_main(run_precommand = True):
         """
