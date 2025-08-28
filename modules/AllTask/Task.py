@@ -258,7 +258,7 @@ class Task:
         return not match_pixel(Page.MAGICPOINT, Page.COLOR_WHITE)
     
     @staticmethod
-    def has_cost_popup(notice = False, diamond = True, price = True):
+    def has_cost_popup(notice = True, diamond = True, price = True):
         """
         判断是否有消费类弹窗，例如消耗钻石，金币，等
 
