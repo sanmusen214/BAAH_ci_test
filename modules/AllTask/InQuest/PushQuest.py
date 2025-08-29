@@ -182,8 +182,11 @@ class PushQuest(Task):
                 walk_grid = True
             if not walk_grid:
                 enteredit = self.run_until(
-                    lambda: click(button_pic(ButtonName.BUTTON_TASK_START)),
-                    lambda: match(page_pic(PageName.PAGE_EDIT_QUEST_TEAM)) or self.has_cost_popup()
+                    # 等级过高会有个 蓝色的确认按钮 警告等级过高的通知，直接点掉
+                    lambda: click(button_pic(ButtonName.BUTTON_TASK_START)) or click(button_pic(ButtonName.BUTTON_CONFIRMB)),
+                    # 如果检测到蓝色OK，此lambda应当阻止进行has_cost_popup的检测
+                    lambda: not match(button_pic(ButtonName.BUTTON_CONFIRMB)) and  (match(page_pic(PageName.PAGE_EDIT_QUEST_TEAM)) or self.has_cost_popup()) # 防止漏检测，此处cost_popup里检测到通知弹窗则认为是要买票
+                    # 体力不足弹窗标题购买体力，卷票次数不足标题是“通知”
                 )
                 if self.has_cost_popup():
                     logging.info(istr({
