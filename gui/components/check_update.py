@@ -10,7 +10,7 @@ from update import whether_has_new_version
 g_result = None
 g_datetime = ""
 
-async def only_check_version():
+def only_check_version():
     global g_result, g_datetime
     datetime_now = datetime.now().strftime("%Y-%m-%d %H")
     # 缓存判断日期，如果日期相同就不用再次请求
