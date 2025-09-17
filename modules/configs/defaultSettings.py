@@ -301,6 +301,10 @@ defaultUserDict = {
                                         "s": "xiaofeiRAN"},
     # 通知内容格式化字符串，%KEY%
     "CUSTOM_EMAIL":{"d":""},
+    # 错误时是否邮件通知
+    "NOTI_WHEN_ERROR":{
+        "d": False,
+    },
 }
 
 # 软件的config里的默认值
@@ -331,10 +335,6 @@ defaultSoftwareDict = {
     # Mirror酱的密钥
     "SEC_KEY_M":{
         "d": "",
-    },
-    # 错误时是否邮件通知
-    "NOTI_WHEN_ERROR":{
-        "d": False,
     },
 }
 

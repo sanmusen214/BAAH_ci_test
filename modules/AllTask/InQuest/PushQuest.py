@@ -109,8 +109,8 @@ class PushQuest(Task):
                 logging.info({"zh_CN": "存在简易攻略", "en_US": "There is a short guide"})
                 offsety = 30
             # 识别关卡序号，更新最新的page_ind和level_ind
-            left_up = ocr_area((139 + offsetx, 197 + offsety), (216 + offsetx, 232 + offsety))
-            page_level = left_up[0].split(" ")[0].replace("|", "").replace("[", "").replace("]", "").strip().split("-")
+            left_up = ocr_area((139 + offsetx, 197 + offsety), (225 + offsetx, 232 + offsety))
+            page_level = left_up[0].split(" ")[0].replace("|", "").replace("[", "").replace("I", "").replace("]", "").strip().split("-")
             try:
                 # 如16-4这种数字组合都能够成功分割
                 logging.info({"zh_CN": f"分割后的关卡序号：{page_level}",
