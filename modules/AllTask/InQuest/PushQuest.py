@@ -111,6 +111,9 @@ class PushQuest(Task):
             # 识别关卡序号，更新最新的page_ind和level_ind
             left_up = ocr_area((139 + offsetx, 197 + offsety), (225 + offsetx, 232 + offsety))
             page_level = left_up[0].split(" ")[0].replace("|", "").replace("[", "").replace("I", "").replace("]", "").strip().split("-")
+            # 后处理split("-")后面的内容，ocr容易把关卡分隔符识别成1，这里判断如果关卡号两位数,只保留两位数的第一位
+            if len(page_level) == 2 and len(page_level[1]) == 2:
+                page_level[1] = page_level[1][0]
             try:
                 # 如16-4这种数字组合都能够成功分割
                 logging.info({"zh_CN": f"分割后的关卡序号：{page_level}",
