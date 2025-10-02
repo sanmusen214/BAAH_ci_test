@@ -110,7 +110,7 @@ def match(imgurl:str, threshold:float = 0.9, returnpos = False, rotate_trans=Fal
     else:
         return match_pattern(get_screenshot_cv_data(),imgurl, threshold=threshold, auto_rotate_if_trans=rotate_trans)[0]
 
-def ocr_area(frompixel, topixel, multi_lines = False) -> Tuple[str, float]:
+def ocr_area(frompixel, topixel, multi_lines = False, ocr_lang = OCR_LANG.EN) -> Tuple[str, float]:
     """
     OCR the area in the given rectangle area of screenshot
     
@@ -121,10 +121,10 @@ def ocr_area(frompixel, topixel, multi_lines = False) -> Tuple[str, float]:
     """
     lowerpixel = (min(frompixel[0], topixel[0]), min(frompixel[1], topixel[1]))
     highterpixel = (max(frompixel[0], topixel[0]), max(frompixel[1], topixel[1]))
-    ocr_result = ocr_pic_area(get_screenshot_cv_data(), lowerpixel[0], lowerpixel[1], highterpixel[0], highterpixel[1], multi_lines=multi_lines)
+    ocr_result = ocr_pic_area(get_screenshot_cv_data(), lowerpixel[0], lowerpixel[1], highterpixel[0], highterpixel[1], multi_lines=multi_lines, ocr_lang = ocr_lang)
     return ocr_result
 
-def ocr_area_0(frompixel, topixel) -> bool:
+def ocr_area_0(frompixel, topixel, ocr_lang = OCR_LANG.EN) -> bool:
     """
     OCR the number in the given rectangle area whether it is 0, return False if length>1
     
@@ -135,7 +135,7 @@ def ocr_area_0(frompixel, topixel) -> bool:
     """
     lowerpixel = (min(frompixel[0], topixel[0]), min(frompixel[1], topixel[1]))
     highterpixel = (max(frompixel[0], topixel[0]), max(frompixel[1], topixel[1]))
-    res_str = ocr_pic_area(get_screenshot_cv_data(), lowerpixel[0], lowerpixel[1], highterpixel[0], highterpixel[1])[0]
+    res_str = ocr_pic_area(get_screenshot_cv_data(), lowerpixel[0], lowerpixel[1], highterpixel[0], highterpixel[1], ocr_lang = ocr_lang)[0]
     res_str = res_str.strip()
     allpossibles = ["0", "O", "o", "Q", "０"]
     # 如果长度为1，就判断它是不是0
