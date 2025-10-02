@@ -99,8 +99,13 @@ class Loginin(Task):
                 EN: "Waiting for the Bilibili login banner to disappear"
             }))
             sleep(2)
-        else:
-            # 活动弹窗
+        elif ocr_area((30, 662), (63, 691))[0].lower() in ["√", "v", "V"]:
+            # 关闭活动弹窗
+            # 判断点击左下角是否有今日不再显示的勾（√）并点掉
+            click((65, 676))
+        elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS) == "菜单" or ocr_area([36, 626], [94, 652])[0].lower() == "menu":
+            # 第一次点击让游戏开始加载
+            # 检测游戏加载前左下角的菜单字样
             click((1250, 40))
      
     def on_run(self) -> None:
