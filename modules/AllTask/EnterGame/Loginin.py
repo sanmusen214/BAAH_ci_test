@@ -52,7 +52,7 @@ class Loginin(Task):
         # 如果进入安装器页面
         if any([check_app_running(ins_act) for ins_act in self.installer_activities]):
             # 中心区域识别所有安装字样点击
-            ocr_list = ocr_area((312, 250), (967, 507), multi_lines=True, ocr_lang=OCR_LANG.ZHS)
+            ocr_list = ocr_area((312, 250), (967, 719), multi_lines=True, ocr_lang=OCR_LANG.ZHS)
             ocr_list = list(filter(lambda text: any([ins_text == text[0] for ins_text in self.installer_texts]), ocr_list))
             logging.info(ocr_list)
             if len(ocr_list) > 0:
@@ -103,7 +103,7 @@ class Loginin(Task):
             # 关闭活动弹窗
             # 判断点击左下角是否有今日不再显示的勾（√）并点掉
             click((65, 676))
-        elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS) == "菜单" or ocr_area([36, 626], [94, 652])[0].lower() == "menu":
+        elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS)[0] == "菜单" or ocr_area([36, 626], [94, 652])[0].lower() == "menu":
             # 第一次点击让游戏开始加载
             # 检测游戏加载前左下角的菜单字样
             click((1250, 40))
