@@ -51,10 +51,6 @@ class Loginin(Task):
                     CN: "模拟器卡顿，重启模拟器",
                     EN: "Emulator blocked, try to restart emulator"
                 }))
-        # 检测屏幕上是否有关键词，有则点击
-        for keyword in self.click_keywords:
-            if ocr_area([0, 0], [width, height], ocr_lang = OCR_LANG.ZHS) == keyword:
-                click((1250, 40))
         # 如果进入安装器页面
         if any([check_app_running(ins_act) for ins_act in self.installer_activities]):
             # 中心区域识别所有安装字样点击
@@ -109,9 +105,11 @@ class Loginin(Task):
             # 关闭活动弹窗
             # 判断点击左下角是否有今日不再显示的勾（√）并点掉
             click((65, 676))
-        elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS)[0] == "菜单" or ocr_area([36, 626], [94, 652])[0].lower() == "menu":
+        elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS)[0].strip() == "菜单" or ocr_area([36, 626], [94, 652])[0].strip().lower() == "menu":
             # 第一次点击让游戏开始加载
             # 检测游戏加载前左下角的菜单字样
+            click((1250, 40))
+        elif ocr_area([0, 0], [width, height])[0].strip() in self.click_keywords:
             click((1250, 40))
      
     def on_run(self) -> None:
