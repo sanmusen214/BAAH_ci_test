@@ -23,9 +23,9 @@ class Loginin(Task):
         self.has_bili_login_banner = lambda: all([match_pixel(point, Page.COLOR_WHITE) for point in self.BILI_LOGIN_BANNER_WHITE_POINTS])
         # 如果在安装器页面的话，要识别并点击安装新版本按钮
         self.installer_activities = ["com.mumu.store", "com.android.packageinstaller"]
-        self.installer_texts = ["更新", "安装", "启动", "打开", "完成"]
-        # 识别关键字用于跳过一些弹窗，如Google框架提示
-        self.click_keywords = [ 'Google' ]
+        self.installer_texts = ["更新", "安装", "启动", "打开"]
+        # 识别关键字用于跳过一些弹窗，如Google框架提示，判断时会把ocr内容转小写
+        self.click_keywords = [ 'google' ]
 
      
     def pre_condition(self) -> bool:
@@ -109,7 +109,8 @@ class Loginin(Task):
             # 第一次点击让游戏开始加载
             # 检测游戏加载前左下角的菜单字样
             click((1250, 40))
-        elif ocr_area([0, 0], [width, height])[0].strip() in self.click_keywords:
+        elif any([click_word in ocr_area([300, 251], [900, 325])[0].strip().lower() for click_word in self.click_keywords]):
+            # 识别到一些关键字弹窗后点击空白处关闭这个弹窗
             click((1250, 40))
      
     def on_run(self) -> None:
