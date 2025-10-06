@@ -9,7 +9,7 @@ from modules.AllTask.Task import Task
 
 from modules.utils.log_utils import logging
 
-from modules.utils import click, swipe, match, page_pic, button_pic, popup_pic, sleep, check_app_running, open_app, config, screenshot, EmulatorBlockError, istr, CN, EN, match_pixel
+from modules.utils import click, swipe, match, page_pic, button_pic, popup_pic, sleep, check_app_running, open_app, config, screenshot, EmulatorBlockError, istr, CN, EN, match_pixel, OCR_LANG, ocr_area, get_screenshot_cv_data
 
 from modules.AllTask.EnterGame.GameUpdate import GameUpdate
 
@@ -21,6 +21,11 @@ class Loginin(Task):
         # B站登录横幅，几个白色采样点
         self.BILI_LOGIN_BANNER_WHITE_POINTS = [[115, 20], [115, 73], [526, 76], [885, 18], [1093, 78], [1161, 22]]
         self.has_bili_login_banner = lambda: all([match_pixel(point, Page.COLOR_WHITE) for point in self.BILI_LOGIN_BANNER_WHITE_POINTS])
+        # 如果在安装器页面的话，要识别并点击安装新版本按钮
+        self.installer_activities = ["com.mumu.store", "com.android.packageinstaller"]
+        self.installer_texts = ["更新", "安装", "启动", "打开"]
+        # 识别关键字用于跳过一些弹窗，如Google框架提示，判断时会把ocr内容转小写
+        self.click_keywords = [ 'google' ]
 
      
     def pre_condition(self) -> bool:
@@ -30,6 +35,8 @@ class Loginin(Task):
     
 
     def try_jump_useless_pages(self):
+        cv_data = get_screenshot_cv_data()
+        height, width = cv_data.shape[0:2]
         # 判断超时
         if time.time() - self.task_start_time > config.userconfigdict["GAME_LOGIN_TIMEOUT"]:
             if config.sessiondict["RESTART_EMULATOR_TIMES"] >= config.userconfigdict["MAX_RESTART_EMULATOR_TIMES"]:
@@ -44,15 +51,25 @@ class Loginin(Task):
                     CN: "模拟器卡顿，重启模拟器",
                     EN: "Emulator blocked, try to restart emulator"
                 }))
+        # 如果进入安装器页面
+        if any([check_app_running(ins_act) for ins_act in self.installer_activities]):
+            # 中心区域识别所有安装字样点击
+            ocr_list = ocr_area((312, 250), (967, 719), multi_lines=True, ocr_lang=OCR_LANG.ZHS)
+            ocr_list = list(filter(lambda text: any([ins_text == text[0] for ins_text in self.installer_texts]), ocr_list))
+            logging.info(ocr_list)
+            if len(ocr_list) > 0:
+                filter_item_box = ocr_list[0][2]
+                click(((filter_item_box[0][0] + filter_item_box[1][0]) // 2, (filter_item_box[0][1] + filter_item_box[1][1]) // 2),
+                    sleeptime=5)
         # 确认处在游戏界面
-        if not check_app_running(config.userconfigdict['ACTIVITY_PATH']):
+        elif not check_app_running(config.userconfigdict['ACTIVITY_PATH']):
             open_app(config.userconfigdict['ACTIVITY_PATH'])
             logging.warn({"zh_CN": "游戏未在前台，尝试打开游戏", "en_US":"The game is not in the foreground, try to open the game"})
             sleep(2)
             screenshot()
 
-            # 大更新
-        if match(popup_pic(PopupName.POPUP_UPDATE_APP)):
+        # 大更新
+        elif match(popup_pic(PopupName.POPUP_UPDATE_APP)):
             if config.userconfigdict["BIG_UPDATE"]:
                 GameUpdate().run()
                 raise EmulatorBlockError(istr({
@@ -84,8 +101,16 @@ class Loginin(Task):
                 EN: "Waiting for the Bilibili login banner to disappear"
             }))
             sleep(2)
-        else:
-            # 活动弹窗
+        elif ocr_area((30, 662), (63, 691))[0].lower() in ["√", "v", "V"]:
+            # 关闭活动弹窗
+            # 判断点击左下角是否有今日不再显示的勾（√）并点掉
+            click((65, 676))
+        elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS)[0].strip() == "菜单" or ocr_area([36, 626], [94, 652])[0].strip().lower() == "menu":
+            # 第一次点击让游戏开始加载
+            # 检测游戏加载前左下角的菜单字样
+            click((1250, 40))
+        elif any([click_word in ocr_area([300, 251], [900, 325])[0].strip().lower() for click_word in self.click_keywords]):
+            # 识别到一些关键字弹窗后点击空白处关闭这个弹窗
             click((1250, 40))
      
     def on_run(self) -> None:
