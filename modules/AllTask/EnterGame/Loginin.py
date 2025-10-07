@@ -1,5 +1,5 @@
 import time
-
+import numpy as np
 from DATA.assets.PageName import PageName
 from DATA.assets.ButtonName import ButtonName
 from DATA.assets.PopupName import PopupName
@@ -26,6 +26,8 @@ class Loginin(Task):
         self.installer_texts = ["更新", "安装", "启动", "打开"]
         # 识别关键字用于跳过一些弹窗，如Google框架提示，判断时会把ocr内容转小写
         self.click_keywords = [ 'google' ]
+        # 储存上一次无匹配任何逻辑操作时的截图中心区域cv，判断画面变化
+        self.last_screenshot_center = None
 
      
     def pre_condition(self) -> bool:
@@ -105,21 +107,47 @@ class Loginin(Task):
             # 关闭活动弹窗
             # 判断点击左下角是否有今日不再显示的勾（√）并点掉
             click((65, 676))
+            logging.info(istr({
+                CN: "关闭活动弹窗",
+                EN: "Close event popup"
+            }))
         elif ocr_area([36, 626], [94, 652], ocr_lang = OCR_LANG.ZHS)[0].strip() == "菜单" or ocr_area([36, 626], [94, 652])[0].strip().lower() == "menu":
             # 第一次点击让游戏开始加载
             # 检测游戏加载前左下角的菜单字样
             click((1250, 40))
+            logging.info(istr({
+                CN: "点击空白处让游戏加载",
+                EN: "Click on a blank area to let the game load"
+            }))
         elif any([click_word in ocr_area([300, 251], [900, 325])[0].strip().lower() for click_word in self.click_keywords]):
             # 识别到一些关键字弹窗后点击空白处关闭这个弹窗
             click((1250, 40))
+            logging.info(istr({
+                CN: "关闭无用弹窗",
+                EN: "Close useless popup"
+            }))
+        else:
+            this_screenshot_center = cv_data[height//3:height*2//3, width//3:width*2//3]
+            if self.last_screenshot_center is not None:
+                # 如果这次中心区域和上次一样，说明画面没有变化，可能卡住了，点击空白处
+                similar = 1 - np.sum(np.abs(this_screenshot_center - self.last_screenshot_center)) / np.sum(this_screenshot_center)
+                if similar > 0.99:
+                    logging.info(istr({
+                        CN: "画面长时间无变化，尝试点击空白处",
+                        EN: "The screen has not changed for a long time, try to click on a blank area"
+                    }))
+                    click((1250, 40))
+            # 初始化/更新中心区域
+            self.last_screenshot_center = this_screenshot_center
+                
      
     def on_run(self) -> None:
         self.task_start_time = time.time()
-        # 因为涉及到签到页面什么的，所以这里点多次魔法点
+        # 循环进行条件判断点击操作
         self.run_until(self.try_jump_useless_pages, 
                       lambda: match(popup_pic(PopupName.POPUP_LOGIN_FORM)) or Page.is_page(PageName.PAGE_HOME), 
                       times = 200,
-                      sleeptime = 4)
+                      sleeptime = 3)
 
      
     def post_condition(self) -> bool:
