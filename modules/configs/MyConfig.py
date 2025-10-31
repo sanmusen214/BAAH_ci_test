@@ -3,6 +3,7 @@ import os
 import time
 from modules.configs.defaultSettings import defaultUserDict, defaultSoftwareDict, defaultSessionDict, defaultStorageDict
 from modules.configs.settingMaps import configname2screenshotname
+from myversion import myversion
 # 程序入口先import这个实例，然后调用parse_user_config方法解析该config实例
 # 然后在其他模块中import这个实例，就可以直接使用这个类的实例了，所有使用（变量的获取/设置）应当放在运行时而不是导入时
 
@@ -19,7 +20,7 @@ class MyConfigger:
     """
     维护config字典，包含软件config，用户任务config，语言包
     """
-    NOWVERSION="1.10.16"
+    NOWVERSION=myversion
     USER_CONFIG_FOLDER="./BAAH_CONFIGS"
     SOFTWARE_CONFIG_FOLDER="./DATA/CONFIGS"
     LANGUAGE_PACKAGE_FOLDER="./DATA/i18n"
