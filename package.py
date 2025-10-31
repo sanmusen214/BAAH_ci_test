@@ -1,7 +1,14 @@
+import sys
+from modules.configs.MyConfig import config, MyConfigger
+# 检查命令行参数
+if len(sys.argv) > 1 and sys.argv[1] == "-v":
+    # 当使用-v参数时，打印版本号并退出
+    print(MyConfigger.NOWVERSION)
+    sys.exit(0)
 import zipfile
 import shutil
 import os
-from modules.configs.MyConfig import config
+
 import subprocess
 from pathlib import Path
 import nicegui
@@ -10,13 +17,7 @@ import pponnxcr
 import platform
 import requests
 import tarfile
-import sys
 
-# 检查命令行参数
-if len(sys.argv) > 1 and sys.argv[1] == "-v":
-    # 当使用-v参数时，打印版本号并退出
-    print(config.NOWVERSION)
-    sys.exit(0)
 
 def package_download_adb(platformstr = None):
     
