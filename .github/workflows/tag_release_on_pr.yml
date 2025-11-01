@@ -76,5 +76,5 @@ jobs:
         tag_name: BAAH${{ steps.get_version.outputs.VERSION_NUMBER }}
         name: BAAH${{ steps.get_version.outputs.VERSION_NUMBER }}
         body: |
-          # BAAH${{ steps.get_change_log.outputs.VERSION_LOG }}
+          ${{ steps.get_change_log.outputs.VERSION_LOG }}
         files: ./dist/*.zip  # 仅上传ZIP格式的制品[10](@ref)
