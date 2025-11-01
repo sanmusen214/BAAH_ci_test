@@ -1,11 +1,15 @@
-myversion = "1.10.37"
+myversion = "1.10.47"
 mychangelog = """
+
 # Feat
 
-适配自动版本打包与发布流程
-Auto pakcage and release action flow
+功能更新
+
+- 适配自动版本打包与发布流程
+- Auto pakcage and release action flow
 
 # Fix
 
 修复 [pr2](https://github.com/sanmusen214/BAAH_ci_test/pull/2) 
+
 """
