@@ -74,5 +74,5 @@ jobs:
         prerelease: false
         tag_name: BAAH${{ steps.get_version.outputs.VERSION_NUMBER }}
         name: BAAH${{ steps.get_version.outputs.VERSION_NUMBER }}
-        body: changelog.txt
+        body_path: changelog.txt  # 关键修改：从文件读取内容
         files: ./dist/*.zip  # 仅上传ZIP格式的制品[10](@ref)

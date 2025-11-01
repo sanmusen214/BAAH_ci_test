@@ -1,4 +1,4 @@
-myversion = "1.10.47"
+myversion = "1.10.67"
 mychangelog = """
 
 # Feat
