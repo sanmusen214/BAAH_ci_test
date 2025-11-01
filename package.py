@@ -1,9 +1,13 @@
 import sys
-from modules.configs.myversion import myversion
+from modules.configs.myversion import myversion, mychangelog
 # 检查命令行参数
 if len(sys.argv) > 1 and sys.argv[1] == "-v":
     # 当使用-v参数时，打印版本号并退出
     print(myversion)
+    sys.exit(0)
+if len(sys.argv) > 1 and sys.argv[1] == "-c":
+    # 当使用-c参数时，打印版本信息并退出
+    print(mychangelog)
     sys.exit(0)
 import zipfile
 import shutil
